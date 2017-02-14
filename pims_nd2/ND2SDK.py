@@ -76,7 +76,7 @@ LIM_ERR = {0:  'LIM_OK',
 
 image_type = {0: 'normal', 1: 'spectral'}
 compression_type = {0: 'lossless', 1: 'lossy', 2: None}
-
+LP_c_double = POINTER(c_double)
 
 def rgb_int_to_float_tuple(rgb):
     return ((rgb & 255) / 255.,
@@ -263,7 +263,7 @@ Lim_GetMultipointName.restype = LIMRESULT
 
 Lim_GetLargeImageDimensions = nd2.Lim_GetLargeImageDimensions
 Lim_GetLargeImageDimensions.argtypes = [LIMFILEHANDLE, POINTER(LIMUINT),
-                                        POINTER(LIMUINT), POINTER(c_double)]
+                                        POINTER(LIMUINT), LP_c_double]
 Lim_GetLargeImageDimensions.restype = LIMRESULT
 
 Lim_GetRecordedDataInt = nd2.Lim_GetRecordedDataInt
@@ -273,7 +273,7 @@ Lim_GetRecordedDataInt.restype = LIMRESULT
 
 Lim_GetRecordedDataDouble = nd2.Lim_GetRecordedDataDouble
 Lim_GetRecordedDataDouble.argtypes = [LIMFILEHANDLE, LIMCWSTR,
-                                      LIMINT, POINTER(c_double)]
+                                      LIMINT, LP_c_double]
 Lim_GetRecordedDataDouble.restype = LIMRESULT
 
 Lim_GetRecordedDataString = nd2.Lim_GetRecordedDataString
@@ -285,6 +285,22 @@ Lim_GetNextUserEvent = nd2.Lim_GetNextUserEvent
 Lim_GetNextUserEvent.argtypes = [LIMFILEHANDLE, POINTER(LIMUINT),
                                  POINTER(LIMFILEUSEREVENT)]
 Lim_GetNextUserEvent.restype = LIMRESULT
+
+Lim_GetCustomDataCount = nd2.Lim_GetCustomDataCount
+Lim_GetCustomDataCount.argtypes = [LIMFILEHANDLE]
+Lim_GetCustomDataCount.restype = LIMINT
+
+Lim_GetCustomDataInfo = nd2.Lim_GetCustomDataInfo
+Lim_GetCustomDataInfo.argtypes = [LIMFILEHANDLE, LIMINT, LIMWSTR, LIMWSTR, POINTER(LIMINT), POINTER(LIMINT)]
+Lim_GetCustomDataInfo.restype = LIMRESULT
+
+Lim_GetCustomDataDouble = nd2.Lim_GetCustomDataDouble
+Lim_GetCustomDataDouble.argtypes = [LIMFILEHANDLE, LIMINT, LP_c_double]
+Lim_GetCustomDataDouble.restype = LIMRESULT
+
+Lim_GetCustomDataString = nd2.Lim_GetCustomDataString
+Lim_GetCustomDataString.argtypes = [LIMFILEHANDLE, LIMINT, LIMWSTR, POINTER(LIMINT)]
+Lim_GetCustomDataString.restype = LIMRESULT
 
 Lim_GetZStackHome = nd2.Lim_GetZStackHome
 Lim_GetZStackHome.argtypes = [LIMFILEHANDLE]

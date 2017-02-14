@@ -277,3 +277,34 @@ class ND2_Reader(FramesSequenceND):
             t_last = self.get_frame_2D(t=length-1).metadata['t_ms']
             self._frame_rate = 1000 * (length - 1) / (t_last - t_first)
         return self._frame_rate
+
+    @property
+    def custom_data(self):
+        custom_count = h.Lim_GetCustomDataCount(self._handle)
+        custom_data = []
+        for i in range(custom_count):
+            index = h.LIMINT(i)
+            name = h.LIMWSTR()
+            description = h.LIMWSTR()
+            # will be filled by the field type(Label=1, Number=2, Text=3, Selection=4, LongText=5, Date=6)
+            data_type = h.LIMINT()
+            flags = h.LIMINT()
+            h.Lim_GetCustomDataInfo(self._handle, index, name, description, data_type, flags)
+
+            if data_type.value == 2:
+                value = h.LP_c_double()
+                h.Lim_GetCustomDataDouble(self._handle, i, value)
+                if value:
+                    value = value.contents
+                else:
+                    value = None
+            else:
+                length = h.LIMINT(256)
+                value = h.LIMWSTR()
+                h.Lim_GetCustomDataString(self._handle, i, value, length)
+                value = value.value
+
+            if name.value is not None or description.value is not None or value is not None:
+                custom_data.append({'name': name.value, 'description': description.value, 'value': value})
+
+        return custom_data
